@@ -3,7 +3,7 @@ from Helper.firestoreHelper import FirebaseHelper
 import time
 firebaseHelper = FirebaseHelper()
 
-app = Flask(__name__, static_folder='D:\Python Project\Web Project\Django Projesi\PythonWebFlutterApp\static',)
+app = Flask(__name__, static_folder='D:\Python Project\Web Project\PythonWebFlutterApp-Web Part\static',)
 app.debug = True
 app.secret_key = 'super secret key'
 

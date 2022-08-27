@@ -17,31 +17,41 @@ class FirebaseHelper:
     def addData(self,name,mail,title,content):
 
         try:
-            subcollection = datetime.datetime.now().strftime("%d%B%Y")
-            #subcollection = datetime.datetime.now().strftime("%x")
+            subcollection = datetime.datetime.now().strftime("%d %B %Y")
 
 
+            infoContact = self.firestoreDb.collection(u'app').document('Contacts')
 
-            infoContact = self.firestoreDb.collection(u'app').document('Contacts').collection(subcollection).document(mail)
+            id = self.getDataLength(infoContact=infoContact,subcollection=subcollection,mail=mail)
 
-            id = self.getDataLength(infoContact=infoContact) + 1
 
-            infoContact.set({"contacts":{str(id):{"name":name,u'mail':mail,u'title': title ,u'message':content,u"createdAt":firestore.firestore.SERVER_TIMESTAMP}}},merge=True)
+            infoContact.set(
+                {str(subcollection):{ mail:{str(id+1):{"name": name, u'mail': mail, u'title': title, u'message': content,u"createdAt": firestore.firestore.SERVER_TIMESTAMP}}}}, merge=True)
+
             return True
         except Exception as e:
-            print("Veri Eklenirken hata olustu "+ str(e) )
+            print("Veri Eklenirken hata olustu "+ str(e))
             return False
 
-    def getDataLength(self,infoContact):
 
-        doc_ref = infoContact
+    def getDataLength(self,infoContact,subcollection,mail):
 
-        doc = doc_ref.get()
 
-        if doc.exists:
-            return len(doc.to_dict()["contacts"])
-        else:
-            return 0
+            doc_ref = infoContact
+
+            doc = doc_ref.get()
+
+            if doc.exists:
+                try:
+                    length_mail_messages = len(doc.to_dict()[subcollection][mail])
+                    return length_mail_messages
+                except:
+
+                    return 0
+
+            else:
+                return 0
+
 
 
 
@@ -57,5 +67,5 @@ class FirebaseHelper:
 
             return True
         except Exception as e:
-            print("Veri gösterilirken hata olustu")
+            print("Veri gösterilirken hata olustu"+str(e))
             return True
